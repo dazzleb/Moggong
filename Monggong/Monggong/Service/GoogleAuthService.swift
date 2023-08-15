@@ -1,8 +1,68 @@
-//
-//  GoogleAuthService.swift
-//  Monggong
-//
-//  Created by 시혁 on 2023/08/15.
-//
-
 import Foundation
+import RxSwift
+import RxCocoa
+import RxRelay
+import FirebaseCore
+import FirebaseAuth
+import GoogleSignIn
+protocol GoogleAuthServiceProtocol {
+    func login() -> Observable<User>
+    func logout()
+}
+/// google Auth
+class GoogleAuthService: GoogleAuthServiceProtocol {
+    var disposeBag: DisposeBag = DisposeBag()
+    let userInfoBehavior: BehaviorRelay<User> = BehaviorRelay(value: User(id: "",
+                                                                          name: "",
+                                                                          profileURL: ""))
+    func login() -> Observable<User> {
+        if let clientID = FirebaseApp.app()?.options.clientID,
+           let topVC = UIApplication.topViewController(){
+            
+            let config = GIDConfiguration(clientID: clientID)
+            GIDSignIn.sharedInstance.configuration = config
+            
+            GIDSignIn.sharedInstance.signIn(withPresenting: topVC) { [unowned self] result, error in
+                guard error == nil else {
+                    print("ERR")
+                    return
+                }
+                
+                guard let user = result?.user,
+                      let idToken = user.idToken?.tokenString else { return }
+                
+                let googleClientId = FirebaseApp.app()?.options.clientID ?? ""
+                let signInConfig = GIDConfiguration.init(clientID: googleClientId)
+                let credential = GoogleAuthProvider.credential(withIDToken: idToken,
+                                                               accessToken: user.accessToken.tokenString)
+                //  signIn 메서드에 전달한 후 반환되는 Google 인증 토큰으로부터 Firebase 인증 사용자 인증 정보를 만듭니다.
+                Auth.auth().signIn(with: credential) { result, error in
+                    print("로그인 실패:  \(error.debugDescription)")
+                    print("로그인 성공 유저:  \(String(describing: result?.user.uid))")
+                    /// id
+                    let userID = result?.user.uid ?? ""
+                    /// name
+                    let name = result?.user.displayName ?? "달성"
+                    /// profileImage
+                    let urlString = result?.user.photoURL?.absoluteString ?? "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541"
+                    
+                    let userIfo: User = User(id: userID, name: name, profileURL: urlString)
+                    
+                    self.userInfoBehavior.accept(userIfo)
+                } // 인증 정보
+            }// GIDSignIn
+        }// if let
+        let userInfoObservable: Observable<User> = userInfoBehavior.asObservable()
+        return userInfoObservable
+    } // login
+    
+    /// google auth logout
+    func logout(){
+        let firebaseAuth = Auth.auth()
+        do {
+            try firebaseAuth.signOut()
+        } catch let signOutError as NSError {
+            print("Error signing out: %@", signOutError)
+        }
+    }
+} // class
