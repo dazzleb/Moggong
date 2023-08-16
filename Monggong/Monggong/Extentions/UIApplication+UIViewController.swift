@@ -10,7 +10,7 @@ import UIKit
 // UIApplication 익스텐션
 extension UIApplication {
     
-    class func topViewController() -> UIViewController? {
+    func topViewController() -> UIViewController? {
        // 애플리케이션 에서 키윈도우로 제일 아래 뷰컨트롤러를 찾고
        // 해당 뷰컨트롤러를 기점으로 최상단의 뷰컨트롤러를 찾아서 반환
         

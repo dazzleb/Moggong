@@ -14,6 +14,8 @@ import RxSwift
 enum AppStep: Step {
     // Login
     case loginIsRequired
+    // Profile Setting
+    case profileIsRequired(userInfo: User)
 }
 final class AppFlow: Flow {
     var root: RxFlow.Presentable {
@@ -33,11 +35,24 @@ final class AppFlow: Flow {
             
         case .loginIsRequired:
             return navigationToScreen()
+            
+        case .profileIsRequired(let userInfo):
+            
+            return navigationToProfileScreen(userInfo)
         }
     }
     
     private func navigationToScreen() -> FlowContributors {
-        let vc = LoginViewController()
+        let loginVM = LoginViewModel()
+        let vc = LoginViewController(loginViewMoel: loginVM)
+        self.rootViewController.pushViewController(vc, animated: true)
+        
+//        return .one(flowContributor: .contribute(withNext: vc))
+        return .one(flowContributor: .contribute(withNextPresentable: vc, withNextStepper: loginVM))
+    }
+    private func navigationToProfileScreen(_ userInfo: User) -> FlowContributors {
+        let vc = ProfileSettingViewController()
+        
         self.rootViewController.pushViewController(vc, animated: true)
         
         return .one(flowContributor: .contribute(withNext: vc))

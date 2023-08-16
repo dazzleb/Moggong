@@ -3,5 +3,5 @@ struct User{
     let id : String
     let name : String
     let profileURL : String
-    var username: String? = nil
+    var isLogined: Bool = false
 }
