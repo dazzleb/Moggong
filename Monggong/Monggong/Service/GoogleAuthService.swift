@@ -43,14 +43,12 @@ class GoogleAuthService: GoogleAuthServiceProtocol {
                         let userID = result?.user.uid ?? ""
                         /// name
                         let name = result?.user.displayName ?? "달성"
-                        /// profileImage
-                        let urlString = result?.user.photoURL?.absoluteString ?? "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541"
                         
-                        let userIfo: User = User(id: userID, name: name, profileURL: urlString, isLogined: true)
+                        let userInfo: User = User(id: userID, name: name, isLogined: true)
                         
-                        UserInfo.shared.updateCurrentUser(userIfo)
+                        UserInfo.shared.updateCurrentUser(userInfo)
                         
-                        observer.on(.next(userIfo))
+                        observer.on(.next(userInfo))
                         observer.on(.completed)
                         
                     } // 인증 정보
