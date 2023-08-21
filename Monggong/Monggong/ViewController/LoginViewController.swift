@@ -33,18 +33,25 @@ class LoginViewController: UIViewController {
         configureUI()
         
         let googleBtnTrigger: Observable<Void> = self.googleLoginBtn.rx.tap.asObservable()
-        let input = LoginViewModel.Input(googleLoginBtnTriger: googleBtnTrigger)
+        let appleBtnTrigger: Observable<Void> = self.appleLoginBtn.rx.tap.asObservable()
+        let input = LoginViewModel.Input(googleLoginBtnTriger: googleBtnTrigger
+                                         , appleLoginBtnTriger: appleBtnTrigger)
+        let output = self.loginVM.transform(input: input)
     }
     
     func configureUI() {
         self.view.addSubview(loginBtnStack)
         self.loginBtnStack.addArrangedSubview(googleLoginBtn)
+        self.loginBtnStack.addArrangedSubview(appleLoginBtn)
         loginBtnStack.snp.makeConstraints { make in
             make.top.equalTo(self.view.snp.top).offset(100)
             make.left.equalTo(self.view.snp.left).offset(85)
             make.centerX.equalToSuperview()
         }
         googleLoginBtn.snp.makeConstraints { make in
+            make.height.equalTo(40)
+        }
+        appleLoginBtn.snp.makeConstraints { make in
             make.height.equalTo(40)
         }
     }
@@ -78,5 +85,27 @@ class LoginViewController: UIViewController {
         $0.layer.shadowOffset = CGSize(width: 2, height: 2)
         $0.layer.shadowRadius = 4
         $0.layer.shadowOpacity = 0.3
+    }
+    lazy var appleLoginBtn: UIButton = UIButton(type: .custom).then {
+        guard let image = UIImage(named: "AppleLogo") else {
+            // 이미지 로드에 실패한 경우에 대한 처리
+            return
+        }
+        $0.setImage(image, for: .normal)
+        $0.setTitle("Sign in with Apple", for: .normal)
+        $0.adjustsImageWhenHighlighted = false // 이미지 반전 제거
+        $0.imageView?.contentMode = .scaleAspectFit
+        $0.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .bold)
+        $0.setTitleColor(UIColor(named: "AppleFontColor"), for: .normal)
+        
+        $0.backgroundColor = UIColor(named: "AppleBGColor")
+        
+        $0.clipsToBounds = false
+        $0.layer.cornerRadius = 14
+        $0.layer.borderColor = UIColor(named: "BoderColor")?.cgColor
+        $0.layer.shadowColor = UIColor(named: "ShadowColor")?.cgColor
+        $0.layer.shadowOffset = CGSize(width: 2, height: 2)
+        $0.layer.shadowRadius = 4
+        $0.layer.shadowOpacity = 0.5
     }
 }

@@ -5,8 +5,9 @@ import RxRelay
 import FirebaseCore
 import FirebaseAuth
 import GoogleSignIn
+//import Alamofire
 protocol GoogleAuthServiceProtocol {
-//    func login() -> User
+    //    func login() -> User
     func login() -> Observable<User>
     func logout()
 }
@@ -31,8 +32,8 @@ class GoogleAuthService: GoogleAuthServiceProtocol {
                         observer.onCompleted()
                         return }
                     
-//                    let googleClientId = FirebaseApp.app()?.options.clientID ?? ""
-//                    let signInConfig = GIDConfiguration.init(clientID: googleClientId)
+                    //                    let googleClientId = FirebaseApp.app()?.options.clientID ?? ""
+                    //                    let signInConfig = GIDConfiguration.init(clientID: googleClientId)
                     let credential = GoogleAuthProvider.credential(withIDToken: idToken,
                                                                    accessToken: user.accessToken.tokenString)
                     //  signIn 메서드에 전달한 후 반환되는 Google 인증 토큰으로부터 Firebase 인증 사용자 인증 정보를 만듭니다.
@@ -42,8 +43,20 @@ class GoogleAuthService: GoogleAuthServiceProtocol {
                         /// id
                         let userID = result?.user.uid ?? ""
                         /// name
-                        let name = result?.user.displayName ?? "달성"
+                        var name: String = ""
                         
+                        Util.shared.getRandomName(completion: { (randomName: String) -> Void in
+                            
+                        })
+                        
+                        Util.shared.getRandomName { randomName in
+                            if let userName = randomName {
+                                name = userName
+                                print("\(userName)")
+                            } else {
+                                print("name loaded to fail")
+                            }
+                        }
                         let userInfo: User = User(id: userID, name: name, isLogined: true)
                         
                         UserInfo.shared.updateCurrentUser(userInfo)
@@ -58,7 +71,7 @@ class GoogleAuthService: GoogleAuthServiceProtocol {
             
             return Disposables.create()
         }
-
+        
     } // login
     
     /// google auth logout

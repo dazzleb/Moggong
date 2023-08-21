@@ -18,28 +18,24 @@ class AppleAuthService: NSObject,ASAuthorizationControllerPresentationContextPro
     static let shared = AppleAuthService()
     var disposeBag : DisposeBag = DisposeBag()
     var currentNonce: String?
-    
-    override init() {
-        super.init()
-    }
-    
+    let appleUser: PublishRelay<User> = PublishRelay()
     func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
         return UIApplication.shared.windows.first!
     }
     /// 애플로그인 플로우
     func startSignInWithAppleFlow() {
-        
-        let nonce = randomNonceString()
-        currentNonce = nonce
-        let appleIDProvider = ASAuthorizationAppleIDProvider()
-        let request = appleIDProvider.createRequest()
-        request.requestedScopes = [.fullName, .email]
-        request.nonce = sha256(nonce)
-        
-        let authorizationController = ASAuthorizationController(authorizationRequests: [request])
-        authorizationController.delegate = self
-        authorizationController.presentationContextProvider = self
-        authorizationController.performRequests()
+   
+            let nonce = self.randomNonceString()
+            self.currentNonce = nonce
+            let appleIDProvider = ASAuthorizationAppleIDProvider()
+            let request = appleIDProvider.createRequest()
+            request.requestedScopes = [.fullName, .email]
+            request.nonce = self.sha256(nonce)
+            
+            let authorizationController = ASAuthorizationController(authorizationRequests: [request])
+            authorizationController.delegate = self
+            authorizationController.presentationContextProvider = self
+            authorizationController.performRequests()
     }
     
     private func randomNonceString(length: Int = 32) -> String {
@@ -73,20 +69,19 @@ class AppleAuthService: NSObject,ASAuthorizationControllerPresentationContextPro
         return hashString
     }
     // ASAuthorizationControllerDelegate 프로토콜
-    func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) -> Observable<User> {
+    func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization){
         
-        return Observable.create { observer in
             if let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential {
                 guard let nonce = self.currentNonce else {
                     fatalError("Invalid state: A login callback was received, but no login request was sent.")
                 }
                 guard let appleIDToken = appleIDCredential.identityToken else {
                     print("Unable to fetch identity token")
-                    return () as! Disposable
+                    return ()
                 }
                 guard let idTokenString = String(data: appleIDToken, encoding: .utf8) else {
                     print("Unable to serialize token string from data: \(appleIDToken.debugDescription)")
-                    return () as! Disposable
+                    return ()
                 }
                 // Initialize a Firebase credential, including the user's full name.
                 let credential = OAuthProvider.appleCredential(withIDToken: idTokenString,
@@ -103,27 +98,29 @@ class AppleAuthService: NSObject,ASAuthorizationControllerPresentationContextPro
                         print(#fileID, #function, #line, "- 애플 로그인 실패")
                         return
                     }
-                    print(#fileID, #function, #line, "\(authResult?.user.displayName)")
                     // User is signed in to Firebase with Apple.
                     // ...
                    
-                    let displayName = authResult?.user.displayName ?? "달성"
+                    var displayName: String = ""
+                    Util.shared.getRandomName { response in
+                        if let name = response {
+                            displayName = name
+                        }else {
+                            print("name loaded to fail")
+                        }
+                    }
 
                     let uid = authResult?.user.uid ?? ""
                     let userInfo: User = User(id: uid, name: displayName,isLogined: true)
+                    self.appleUser.accept(userInfo)
                     UserInfo.shared.updateCurrentUser(userInfo)
-                    
-                    observer.on(.next(userInfo))
-                    observer.on(.completed)
-                }
+                }//Auth
             }
             // if let
             func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
                 // Handle error.
                 print("Sign in with Apple errored: \(error)")
             }
-            return Disposables.create()
         }
         
     }
-}
