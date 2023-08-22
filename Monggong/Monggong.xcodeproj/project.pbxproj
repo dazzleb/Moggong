@@ -44,6 +44,13 @@
 		283A3EC92A8DC7D3004FF2C5 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 283A3EC82A8DC7D3004FF2C5 /* GoogleService-Info.plist */; };
 		283A3ECC2A8E50E4004FF2C5 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 283A3ECB2A8E50E4004FF2C5 /* Alamofire */; };
 		283A3ECE2A8E547E004FF2C5 /* RandomName.swift in Sources */ = {isa = PBXBuildFile; fileRef = 283A3ECD2A8E547E004FF2C5 /* RandomName.swift */; };
+		28CF83D32A9498820075179F /* MainTabFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28CF83D22A9498820075179F /* MainTabFlow.swift */; };
+		28CF83D62A9499310075179F /* SetGoalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28CF83D52A9499310075179F /* SetGoalViewController.swift */; };
+		28CF83D82A9499720075179F /* ShareGoalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28CF83D72A9499720075179F /* ShareGoalViewController.swift */; };
+		28CF83DA2A9499A50075179F /* SetViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28CF83D92A9499A50075179F /* SetViewController.swift */; };
+		28CF83DD2A949A560075179F /* GoalFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28CF83DC2A949A560075179F /* GoalFlow.swift */; };
+		28CF83DF2A949AAC0075179F /* ShareFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28CF83DE2A949AAC0075179F /* ShareFlow.swift */; };
+		28CF83E12A949AE40075179F /* SetFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28CF83E02A949AE40075179F /* SetFlow.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -66,6 +73,13 @@
 		283A3EC72A8D290A004FF2C5 /* Monggong.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Monggong.entitlements; sourceTree = "<group>"; };
 		283A3EC82A8DC7D3004FF2C5 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../GoogleService-Info.plist"; sourceTree = "<group>"; };
 		283A3ECD2A8E547E004FF2C5 /* RandomName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RandomName.swift; sourceTree = "<group>"; };
+		28CF83D22A9498820075179F /* MainTabFlow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabFlow.swift; sourceTree = "<group>"; };
+		28CF83D52A9499310075179F /* SetGoalViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetGoalViewController.swift; sourceTree = "<group>"; };
+		28CF83D72A9499720075179F /* ShareGoalViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareGoalViewController.swift; sourceTree = "<group>"; };
+		28CF83D92A9499A50075179F /* SetViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetViewController.swift; sourceTree = "<group>"; };
+		28CF83DC2A949A560075179F /* GoalFlow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalFlow.swift; sourceTree = "<group>"; };
+		28CF83DE2A949AAC0075179F /* ShareFlow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareFlow.swift; sourceTree = "<group>"; };
+		28CF83E02A949AE40075179F /* SetFlow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetFlow.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -140,6 +154,7 @@
 		283A3EA32A89FDBE004FF2C5 /* Flows */ = {
 			isa = PBXGroup;
 			children = (
+				28CF83DB2A949A420075179F /* TabFlow */,
 				283A3EA42A89FDD0004FF2C5 /* AppFlow.swift */,
 				283A3EA62A89FE06004FF2C5 /* AppStepper.swift */,
 			);
@@ -149,6 +164,7 @@
 		283A3EA82A89FEB2004FF2C5 /* ViewController */ = {
 			isa = PBXGroup;
 			children = (
+				28CF83D42A9499100075179F /* Tab */,
 				283A3EA92A89FEBE004FF2C5 /* LoginViewController.swift */,
 				283A3EC12A8BC991004FF2C5 /* ProfileSettingViewController.swift */,
 			);
@@ -195,6 +211,27 @@
 				283A3EC32A8CCF18004FF2C5 /* UserInfo.swift */,
 			);
 			path = Util;
+			sourceTree = "<group>";
+		};
+		28CF83D42A9499100075179F /* Tab */ = {
+			isa = PBXGroup;
+			children = (
+				28CF83D52A9499310075179F /* SetGoalViewController.swift */,
+				28CF83D72A9499720075179F /* ShareGoalViewController.swift */,
+				28CF83D92A9499A50075179F /* SetViewController.swift */,
+			);
+			path = Tab;
+			sourceTree = "<group>";
+		};
+		28CF83DB2A949A420075179F /* TabFlow */ = {
+			isa = PBXGroup;
+			children = (
+				28CF83D22A9498820075179F /* MainTabFlow.swift */,
+				28CF83DC2A949A560075179F /* GoalFlow.swift */,
+				28CF83DE2A949AAC0075179F /* ShareFlow.swift */,
+				28CF83E02A949AE40075179F /* SetFlow.swift */,
+			);
+			path = TabFlow;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -303,6 +340,7 @@
 			files = (
 				283A3E622A89FB2D004FF2C5 /* AppDelegate.swift in Sources */,
 				283A3EA52A89FDD0004FF2C5 /* AppFlow.swift in Sources */,
+				28CF83DD2A949A560075179F /* GoalFlow.swift in Sources */,
 				283A3EB82A8B2896004FF2C5 /* GoogleAuthService.swift in Sources */,
 				283A3EB12A8A619E004FF2C5 /* LoginViewModel.swift in Sources */,
 				283A3EC02A8B2F8B004FF2C5 /* UIApplication+UIViewController.swift in Sources */,
@@ -311,8 +349,14 @@
 				283A3EAA2A89FEBE004FF2C5 /* LoginViewController.swift in Sources */,
 				283A3EC22A8BC991004FF2C5 /* ProfileSettingViewController.swift in Sources */,
 				283A3EA72A89FE06004FF2C5 /* AppStepper.swift in Sources */,
+				28CF83D62A9499310075179F /* SetGoalViewController.swift in Sources */,
+				28CF83E12A949AE40075179F /* SetFlow.swift in Sources */,
 				283A3EC42A8CCF18004FF2C5 /* UserInfo.swift in Sources */,
+				28CF83DF2A949AAC0075179F /* ShareFlow.swift in Sources */,
 				283A3ECE2A8E547E004FF2C5 /* RandomName.swift in Sources */,
+				28CF83D82A9499720075179F /* ShareGoalViewController.swift in Sources */,
+				28CF83DA2A9499A50075179F /* SetViewController.swift in Sources */,
+				28CF83D32A9498820075179F /* MainTabFlow.swift in Sources */,
 				283A3EB52A8B27FB004FF2C5 /* User.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

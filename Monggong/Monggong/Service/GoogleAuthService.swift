@@ -45,10 +45,6 @@ class GoogleAuthService: GoogleAuthServiceProtocol {
                         /// name
                         var name: String = ""
                         
-                        Util.shared.getRandomName(completion: { (randomName: String) -> Void in
-                            
-                        })
-                        
                         Util.shared.getRandomName { randomName in
                             if let userName = randomName {
                                 name = userName

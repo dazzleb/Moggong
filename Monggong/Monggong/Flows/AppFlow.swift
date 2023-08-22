@@ -15,7 +15,7 @@ enum AppStep: Step {
     // Login
     case loginIsRequired
     // Profile Setting
-    case profileIsRequired(userInfo: User)
+    case mainTabBarIsRequired
 }
 final class AppFlow: Flow {
     var root: RxFlow.Presentable {
@@ -36,9 +36,9 @@ final class AppFlow: Flow {
         case .loginIsRequired:
             return navigationToScreen()
             
-        case .profileIsRequired(let userInfo):
+        case .mainTabBarIsRequired:
             
-            return navigationToProfileScreen(userInfo)
+            return navigationToTabBar()
         }
     }
     
@@ -50,11 +50,11 @@ final class AppFlow: Flow {
 //        return .one(flowContributor: .contribute(withNext: vc))
         return .one(flowContributor: .contribute(withNextPresentable: vc, withNextStepper: loginVM))
     }
-    private func navigationToProfileScreen(_ userInfo: User) -> FlowContributors {
-        let vc = ProfileSettingViewController()
-        
-        self.rootViewController.pushViewController(vc, animated: true)
-        
-        return .one(flowContributor: .contribute(withNext: vc))
+    private func navigationToTabBar() -> FlowContributors {
+        let tab = MainTabFlow()
+        let tabBar = tab.rootViewController
+        self.rootViewController.setViewControllers([tabBar], animated: true)
+        return .one(flowContributor: .contribute(withNextPresentable: tab,
+                                                 withNextStepper: OneStepper(withSingleStep: MainTabStep.mainTabIsRequired)))
     }
 }

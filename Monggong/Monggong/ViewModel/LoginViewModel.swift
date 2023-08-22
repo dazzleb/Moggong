@@ -60,12 +60,10 @@ class LoginViewModel: LoginModelTypeProtocol, Stepper {
         isLoginOk
             .debug("야호!")
             .map { user -> AppStep in
-                return AppStep.profileIsRequired(userInfo: user)
+                return AppStep.mainTabBarIsRequired
             }
             .bind(to: self.steps)
             .disposed(by: disposeBag)
-        
-        // (User) -> Void
         
     }
 }
