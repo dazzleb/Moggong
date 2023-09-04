@@ -17,6 +17,8 @@ enum AppStep: Step {
     // Login
     case loginIsRequired
     // Profile Setting
+    case registInfoRequired(userInfo: User)
+    
     case mainTabBarIsRequired
 }
 final class AppFlow: Flow {
@@ -36,11 +38,14 @@ final class AppFlow: Flow {
         switch step {
         case .splash:
             return navigatioToSplash()
+            
         case .loginIsRequired:
             return navigationToScreen()
             
-        case .mainTabBarIsRequired:
+        case .registInfoRequired(let userInfo):
+            return navigationToRegistIfonScreen(userInfo)
             
+        case .mainTabBarIsRequired:
             return navigationToTabBar()
         }
     }
@@ -50,7 +55,6 @@ final class AppFlow: Flow {
         
         return .one(flowContributor: .contribute(withNext: splashVC))
     }
-    
     private func navigationToScreen() -> FlowContributors {
         let loginVM = LoginViewModel()
         let vc = LoginViewController(loginViewMoel: loginVM)
@@ -59,6 +63,14 @@ final class AppFlow: Flow {
         
 //        return .one(flowContributor: .contribute(withNext: vc))
         return .one(flowContributor: .contribute(withNextPresentable: vc, withNextStepper: loginVM))
+    }
+    private func navigationToRegistIfonScreen(_ userInfo: User) -> FlowContributors {
+        let RegistVM = RegistInfoViewModel()
+        
+        let vc = RegistUserInfoViewController(RegistInfoViewModel: RegistVM)
+        self.rootViewController.setViewControllers([vc], animated: true)
+        
+        return .one(flowContributor: .contribute(withNextPresentable: vc, withNextStepper: RegistVM))
     }
     private func navigationToTabBar() -> FlowContributors {
         let tab = MainTabFlow()

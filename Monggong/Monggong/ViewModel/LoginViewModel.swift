@@ -68,9 +68,10 @@ class LoginViewModel: LoginModelTypeProtocol, Stepper {
                 user.id.count > 0
             })
             .map { user -> AppStep in
+                //TODO: 유저정보 입력 화면 으로 이동
                 FirebaseLoginService.shared.writeUserInfo(user: user)
-                UserDefaults.standard.set(user.id, forKey: "uid")
-                return AppStep.mainTabBarIsRequired
+//                UserDefaults.standard.set(user.id, forKey: "uid")
+                return AppStep.registInfoRequired(userInfo: user)
             }
             .bind(to: self.steps)
             .disposed(by: disposeBag)
