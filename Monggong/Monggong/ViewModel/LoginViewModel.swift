@@ -32,38 +32,48 @@ class LoginViewModel: LoginModelTypeProtocol, Stepper {
     
     //MARK: transform
     func transform(input: Input) {
-        
+//
         let isLoginOk : Observable<User> = self.userInfo
             .asObservable()
-            .debug("로그인 시도")
             .share(replay: 1) // google & apple
-        
-        //        var isLoginOk : Observable<User> =
+//
         input.googleLoginBtnTriger
             .debug("⭐️googleLoginBtnTriger")
             .flatMapLatest({
+
                 return self.googleAuthLoginService.login()
             })
             .debug("google")
-        //            .filter { $0.isLogined == true }
-        //            .bind(to: self.userInfo)
+            .flatMapLatest({ (fetchedUser : User?) in
+                if let fetchedUser = fetchedUser { // 유저 정보 존재 로그인
+                    return Observable.just(fetchedUser)
+                } else { // 회원가입 필요
+                    return Observable.just(UserInfo.shared.getCurrentUser()!)
+                }
+            })
+        //  .bind(to: self.userInfo)
             .bind(onNext: self.userInfo.accept(_:))
             .disposed(by: disposeBag)
-        //        func accept(_ event: User) {}
+
         input.appleLoginBtnTriger
             .debug("appleLoginTriger")
             .bind(onNext: {self.appleAuthLoginService.startSignInWithAppleFlow()})
             .disposed(by: disposeBag)
-        
+
         self.appleAuthLoginService.appleUser.bind(to: self.userInfo)
             .disposed(by: disposeBag)
+
         isLoginOk
-            .debug("야호!")
+            .filter({ user in
+                user.id.count > 0
+            })
             .map { user -> AppStep in
+                FirebaseLoginService.shared.writeUserInfo(user: user)
+                UserDefaults.standard.set(user.id, forKey: "uid")
                 return AppStep.mainTabBarIsRequired
             }
             .bind(to: self.steps)
             .disposed(by: disposeBag)
-        
+
     }
 }

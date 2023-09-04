@@ -23,7 +23,7 @@ class UserInfo {
 }
 class Util {
     static let shared = Util()
-    
+    ///
     func getRandomName(completion: @escaping (String?) -> Void) {
             let url = "https://nickname.hwanmoo.kr/"
             let parameters: [String: Any] = [

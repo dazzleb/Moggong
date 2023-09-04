@@ -12,6 +12,8 @@ import RxCocoa
 import RxSwift
 
 enum AppStep: Step {
+    //Splash
+    case splash
     // Login
     case loginIsRequired
     // Profile Setting
@@ -32,7 +34,8 @@ final class AppFlow: Flow {
         guard let step = step as? AppStep else { return FlowContributors.none }
         
         switch step {
-            
+        case .splash:
+            return navigatioToSplash()
         case .loginIsRequired:
             return navigationToScreen()
             
@@ -41,11 +44,18 @@ final class AppFlow: Flow {
             return navigationToTabBar()
         }
     }
+    private func navigatioToSplash() -> FlowContributors {
+        let splashVC = SplashViewController()
+        self.rootViewController.pushViewController(splashVC, animated: true)
+        
+        return .one(flowContributor: .contribute(withNext: splashVC))
+    }
     
     private func navigationToScreen() -> FlowContributors {
         let loginVM = LoginViewModel()
         let vc = LoginViewController(loginViewMoel: loginVM)
-        self.rootViewController.pushViewController(vc, animated: true)
+        self.rootViewController.setViewControllers([vc], animated: true)
+//        self.rootViewController.pushViewController(vc, animated: true)
         
 //        return .one(flowContributor: .contribute(withNext: vc))
         return .one(flowContributor: .contribute(withNextPresentable: vc, withNextStepper: loginVM))

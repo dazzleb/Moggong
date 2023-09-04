@@ -13,7 +13,7 @@ class AppSteper: Stepper {
     var steps: RxRelay.PublishRelay<RxFlow.Step> = PublishRelay()
     
     var initialStep: Step {
-        return AppStep.loginIsRequired
+        return AppStep.splash
     }
     
     func readyToEmitSteps() {
