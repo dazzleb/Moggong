@@ -16,6 +16,11 @@ import SnapKit
 class RegistUserInfoViewController: UIViewController {
     var disposeBag: DisposeBag = DisposeBag()
     var RegistVM: RegistInfoViewModel
+    /// 라벨 글자 수 확인용
+    let labelTextRelay = BehaviorRelay<String>(value: "")
+    /// 활성화 비활성화 확인용
+    let buttonEnabledRelay = BehaviorRelay<Bool>(value: false)
+    
     
     init(RegistInfoViewModel: RegistInfoViewModel = RegistInfoViewModel()){
         self.RegistVM = RegistInfoViewModel
@@ -30,20 +35,37 @@ class RegistUserInfoViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
+        // text 수 따라서 활성화 비활성화 전달
+        labelTextRelay
+            .map { text -> Bool in
+                return text.count > 1
+            }
+            .bind(to: buttonEnabledRelay)
+            .disposed(by: disposeBag)
+        // btn 비활성화
+        buttonEnabledRelay
+            .bind(to: nextButton.rx.isEnabled)
+            .disposed(by: disposeBag)
+        
         let randomNameBtnTrigger: Observable<Void> = self.randomNameBtn.rx.tap.asObservable()
-        let input = RegistInfoViewModel.Input(RandomNameBtnTriger: randomNameBtnTrigger)
+        let nextBtnTrigger: Observable<Void> = self.nextButton.rx.tap.asObservable()
+        let input = RegistInfoViewModel.Input(RandomNameBtnTriger: randomNameBtnTrigger,
+                                              nextBtnTrigger: nextBtnTrigger)
         let output = self.RegistVM.transform(input: input)
         
-        output.randomName.subscribe { name in
-            self.writedNameLabel.text = name
-        }.disposed(by: disposeBag)
+        output.randomName
+            .subscribe { name in
+                self.writedNameLabel.text = name
+                self.labelTextRelay.accept(name)
+            }.disposed(by: disposeBag)
     }
     //MARK: -
     func configureUI() {
+        navigationItem.rightBarButtonItem = nextButton
         self.view.backgroundColor = .white
         self.view.addSubview(randomNameBtn)
         self.view.addSubview(nameStackView)
-
+        
         nameStackView.addArrangedSubview(nameLabel)
         nameStackView.addArrangedSubview(writedNameLabel)
         
@@ -60,6 +82,7 @@ class RegistUserInfoViewController: UIViewController {
         
     }
     //MARK: -
+    lazy var nextButton = UIBarButtonItem(title: "확인", style: .plain, target: nil, action: nil)
     lazy var randomNameBtn: UIButton = UIButton(type: .custom).then {
         $0.titleLabel?.numberOfLines = 2
         $0.setTitle("랜덤으로 \n이름 변경", for: .normal)

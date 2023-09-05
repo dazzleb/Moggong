@@ -21,11 +21,18 @@ class RegistInfoViewModel: RegistInfoModelTypeProtocol, Stepper {
     let name: PublishRelay<String> = PublishRelay()
     struct Input {
         var RandomNameBtnTriger: Observable<Void>
+        var nextBtnTrigger: Observable<Void>
     }
     struct Output {
         var randomName: Observable<String>
     }
-   
+    init(){
+        
+        Util.shared.getRandomName { response in
+            let randomname = response ?? ""
+            self.name.accept(randomname)
+        }
+    }
     //MARK: -
     func transform(input: Input) -> Output {
         //버튼 트리거 되면 유저 네임 돌려서 값 전달 ✅
@@ -34,24 +41,28 @@ class RegistInfoViewModel: RegistInfoModelTypeProtocol, Stepper {
         
         let pickUpName : Observable<String> = self.name
             .asObservable()
+        
         input.RandomNameBtnTriger
             .flatMap { _ in
-                return Observable.create { observer in
-                    Util.shared.getRandomName { response in
-                        guard let res = response else {
-                            observer.onNext("")
-                            observer.onCompleted()
-                            return
-                        }
-                        observer.onNext(res)
-                        observer.onCompleted()
-                    }
-                    return Disposables.create()
-                }
+                return Util.shared.pickUpName()
             }
+            .flatMap({ (name: String?) in
+                if let name = name {
+                    return Observable.just(name)
+                }else{
+                    return Observable.just("")
+                }
+            })
             .bind(onNext: self.name.accept(_:))
             .disposed(by: disposeBag)
         
+        input.nextBtnTrigger
+            .map { _ in
+                FirebaseLoginService.shared.write(name: pickUpName)
+//                UserDefaults.standard.set(user.id, forKey: "uid")
+                return AppStep.mainTabBarIsRequired
+            }.bind(to: self.steps)
+            .disposed(by: disposeBag)
         
         return Output(randomName: pickUpName)
     }

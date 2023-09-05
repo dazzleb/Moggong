@@ -65,12 +65,12 @@ final class AppFlow: Flow {
         return .one(flowContributor: .contribute(withNextPresentable: vc, withNextStepper: loginVM))
     }
     private func navigationToRegistIfonScreen(_ userInfo: User) -> FlowContributors {
-        let RegistVM = RegistInfoViewModel()
+        let registVM = RegistInfoViewModel()
         
-        let vc = RegistUserInfoViewController(RegistInfoViewModel: RegistVM)
+        let vc = RegistUserInfoViewController(RegistInfoViewModel: registVM)
         self.rootViewController.setViewControllers([vc], animated: true)
         
-        return .one(flowContributor: .contribute(withNextPresentable: vc, withNextStepper: RegistVM))
+        return .one(flowContributor: .contribute(withNextPresentable: vc, withNextStepper: registVM))
     }
     private func navigationToTabBar() -> FlowContributors {
         let tab = MainTabFlow()

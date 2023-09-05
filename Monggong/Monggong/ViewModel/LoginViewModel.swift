@@ -40,10 +40,8 @@ class LoginViewModel: LoginModelTypeProtocol, Stepper {
         input.googleLoginBtnTriger
             .debug("⭐️googleLoginBtnTriger")
             .flatMapLatest({
-
                 return self.googleAuthLoginService.login()
             })
-            .debug("google")
             .flatMapLatest({ (fetchedUser : User?) in
                 if let fetchedUser = fetchedUser { // 유저 정보 존재 로그인
                     return Observable.just(fetchedUser)
@@ -64,17 +62,15 @@ class LoginViewModel: LoginModelTypeProtocol, Stepper {
             .disposed(by: disposeBag)
 
         isLoginOk
-            .filter({ user in
-                user.id.count > 0
-            })
+//            .filter({ user in
+//                user.id.count > 0
+//            })
             .map { user -> AppStep in
                 //TODO: 유저정보 입력 화면 으로 이동
-                FirebaseLoginService.shared.writeUserInfo(user: user)
 //                UserDefaults.standard.set(user.id, forKey: "uid")
                 return AppStep.registInfoRequired(userInfo: user)
             }
             .bind(to: self.steps)
             .disposed(by: disposeBag)
-
     }
 }

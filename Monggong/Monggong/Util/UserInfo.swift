@@ -7,6 +7,7 @@
 
 import Foundation
 import Alamofire
+import RxSwift
 class UserInfo {
     static let shared = UserInfo()
     
@@ -54,4 +55,18 @@ class Util {
                     }
                 }
         }
+    func pickUpName() -> Observable<String?> {
+       return Observable.create { observer in
+            Util.shared.getRandomName { response in
+                guard let res = response else {
+                    observer.onNext("")
+                    observer.onCompleted()
+                    return
+                }
+                observer.onNext(res)
+                observer.onCompleted()
+            }
+            return Disposables.create()
+        }
+    }
 }
